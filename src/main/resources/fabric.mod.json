@@ -20,11 +20,19 @@
     ],
     "main": [
       "link.botwmcs.economic.Economic"
+    ],
+    "cardinal-components-entity": [
+      "link.botwmcs.economic.capability.entity.CapabilityRegister"
     ]
   },
   "mixins": [
     "economic.mixins.json"
   ],
+  "custom": {
+    "cardinal-components": [
+      "economic:player_eco_data"
+    ]
+  },
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
