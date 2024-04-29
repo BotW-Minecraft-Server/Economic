@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "economic",
+  "version": "${version}",
+  "name": "Economic",
+  "description": "A fabric mod that prove economic feature",
+  "authors": [
+    "Sam_Chai"
+  ],
+  "contact": {
+    "website": "https://botwmcs.link",
+    "repo": "https://github.com/sam-chai/Economic"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/economic/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "link.botwmcs.economic.client.EconomicClient"
+    ],
+    "main": [
+      "link.botwmcs.economic.Economic"
+    ]
+  },
+  "mixins": [
+    "economic.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
