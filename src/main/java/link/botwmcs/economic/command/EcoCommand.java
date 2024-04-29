@@ -23,7 +23,6 @@ public class EcoCommand {
                         .executes(context -> {
                             int balance = BalanceControl.getMoney(context.getSource().getPlayer());
                             context.getSource().sendSystemMessage(Component.nullToEmpty("Your balance: " + balance));
-                            context.getSource().sendSystemMessage(Component.nullToEmpty(CapabilityRegister.PLAYER_DATA.get(context.getSource().getPlayer()).getIsFirstJoin() ? "First join" : "Not first join"));
                             return 1;
                         })
                 )
@@ -45,6 +44,17 @@ public class EcoCommand {
                                         .then(Commands.argument("amount", IntegerArgumentType.integer(0))
                                                 .executes(context -> {
                                                             BalanceControl.setMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
+                                                            return 0;
+                                                        }
+                                                )
+                                        )
+                                )
+                        )
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("target", EntityArgument.players())
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0))
+                                                .executes(context -> {
+                                                            BalanceControl.addMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
                                                             return 0;
                                                         }
                                                 )
