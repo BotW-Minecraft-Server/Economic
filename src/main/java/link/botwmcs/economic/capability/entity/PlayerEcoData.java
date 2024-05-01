@@ -5,16 +5,16 @@ import net.minecraft.nbt.CompoundTag;
 
 public class PlayerEcoData implements IPlayerEcoData, AutoSyncedComponent {
     private final Object provider;
-    private Integer playerMoney;
+    private Double playerMoney;
     private Boolean playerIsFirstJoin = true;
     public PlayerEcoData(Object provider) {
         this.provider = provider;
     }
 
     @Override
-    public Integer getMoney() {
+    public Double getMoney() {
         if (playerMoney == null) {
-            return 0;
+            return 0.00;
         }
         return playerMoney;
     }
@@ -25,7 +25,7 @@ public class PlayerEcoData implements IPlayerEcoData, AutoSyncedComponent {
     }
 
     @Override
-    public void setMoney(Integer money) {
+    public void setMoney(Double money) {
         this.playerMoney = money;
         CapabilityRegister.PLAYER_DATA.sync(this.provider);
     }
@@ -38,16 +38,16 @@ public class PlayerEcoData implements IPlayerEcoData, AutoSyncedComponent {
 
     @Override
     public void readFromNbt(CompoundTag tag) {
-        playerMoney = tag.getInt("money");
+        playerMoney = tag.getDouble("money");
         playerIsFirstJoin = tag.getBoolean("isFirstJoin");
     }
 
     @Override
     public void writeToNbt(CompoundTag tag) {
         if (playerMoney == null) {
-            playerMoney = 0;
+            playerMoney = 0.00;
         }
-        tag.putInt("money", playerMoney);
+        tag.putDouble("money", playerMoney);
         tag.putBoolean("isFirstJoin", playerIsFirstJoin);
     }
 

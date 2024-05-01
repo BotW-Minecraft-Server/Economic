@@ -21,7 +21,7 @@ public class EcoCommand {
                 .then(Commands.literal("balance")
                         .requires(CommandSourceStack::isPlayer)
                         .executes(context -> {
-                            int balance = BalanceControl.getMoney(context.getSource().getPlayer());
+                            double balance = BalanceControl.getMoney(context.getSource().getPlayer());
                             context.getSource().sendSystemMessage(Component.nullToEmpty("Your balance: " + balance));
                             return 1;
                         })

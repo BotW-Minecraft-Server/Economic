@@ -7,9 +7,12 @@ public class ServerConfig {
     public static final ForgeConfigSpec CONFIG_SPEC;
     public static final ServerConfig CONFIG;
 
-    public final ForgeConfigSpec.IntValue startingMoney;
-    public final ForgeConfigSpec.IntValue maxMoney;
-    public final ForgeConfigSpec.IntValue minMoney;
+    public final ForgeConfigSpec.ConfigValue<Double> startingMoney;
+    public final ForgeConfigSpec.ConfigValue<Double> maxMoney;
+    public final ForgeConfigSpec.ConfigValue<Double> minMoney;
+    public final ForgeConfigSpec.BooleanValue enableRound;
+    public final ForgeConfigSpec.BooleanValue enableTax;
+    public final ForgeConfigSpec.ConfigValue<Double> propertyMedian;
 
     static {
         Pair<ServerConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ServerConfig::new);
@@ -21,13 +24,24 @@ public class ServerConfig {
         builder.push("money");
         startingMoney = builder
                 .comment("The amount of money that players start with.")
-                .defineInRange("startingMoney", 0, 0, Integer.MAX_VALUE);
+                .define("startingMoney", 0.00);
         maxMoney = builder
                 .comment("The maximum amount of money that players can have.")
-                .defineInRange("maxMoney", 100000000, 0, Integer.MAX_VALUE);
+                .defineInRange("maxMoney", 1000000000.00, 0.00, Double.MAX_VALUE);
         minMoney = builder
                 .comment("The minimum amount of money that players can have.")
-                .defineInRange("minMoney", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                .defineInRange("minMoney", 0.00, Double.MIN_VALUE, 0.00);
+        enableRound = builder
+                .comment("Enable or disable rounding money.")
+                .define("enableRound", true);
         builder.pop();
+        builder.push("tax");
+        enableTax = builder
+                .comment("Enable or disable tax.")
+                .define("enableTax", true);
+        propertyMedian = builder
+                .comment("The average balance of single player in mathematical expectation.")
+                .define("propertyMedian", 1000000.00);
+
     }
 }
