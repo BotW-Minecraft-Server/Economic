@@ -35,4 +35,23 @@ public class BalanceControl {
     public static void resetMoney(ServerPlayer serverPlayer) {
         CapabilityRegister.PLAYER_DATA.get(serverPlayer).setMoney(ServerConfig.CONFIG.startingMoney.get());
     }
+
+    public static void removeMoney(ServerPlayer target, int amount) {
+        CapabilityRegister.PLAYER_DATA.get(target).setMoney(CapabilityRegister.PLAYER_DATA.get(target).getMoney() - amount);
+    }
+
+    public static boolean hasEnoughMoney(ServerPlayer serverPlayer, int money) {
+        return getMoney(serverPlayer) >= money;
+    }
+
+    public static boolean pay(ServerPlayer payer, ServerPlayer payee, int amount) {
+        if (hasEnoughMoney(payer, amount)) {
+            removeMoney(payer, amount);
+            addMoney(payee, amount);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

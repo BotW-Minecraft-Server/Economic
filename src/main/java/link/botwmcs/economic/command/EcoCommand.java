@@ -12,6 +12,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class EcoCommand {
 
@@ -19,7 +20,6 @@ public class EcoCommand {
         dispatcher.register(Commands.literal("eco")
                 .then(Commands.literal("balance")
                         .requires(CommandSourceStack::isPlayer)
-                        .requires(source -> !source.getPlayer().isLocalPlayer())
                         .executes(context -> {
                             int balance = BalanceControl.getMoney(context.getSource().getPlayer());
                             context.getSource().sendSystemMessage(Component.nullToEmpty("Your balance: " + balance));
@@ -28,10 +28,14 @@ public class EcoCommand {
                 )
                 .then(Commands.literal("pay")
                         .requires(CommandSourceStack::isPlayer)
-                        .then(Commands.argument("target", EntityArgument.players())
+                        .then(Commands.argument("target", EntityArgument.player())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                         .executes(context -> {
-                                            // todo: implement pay command
+                                            if (BalanceControl.pay(context.getSource().getPlayer(), EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"))) {
+                                                context.getSource().sendSystemMessage(Component.nullToEmpty("Payment successful!"));
+                                            } else {
+                                                context.getSource().sendSystemMessage(Component.nullToEmpty("You don't have enough money!"));
+                                            }
                                             return 1;
                                         })
                                 )
@@ -55,6 +59,17 @@ public class EcoCommand {
                                         .then(Commands.argument("amount", IntegerArgumentType.integer(0))
                                                 .executes(context -> {
                                                             BalanceControl.addMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
+                                                            return 0;
+                                                        }
+                                                )
+                                        )
+                                )
+                        )
+                        .then(Commands.literal("remove")
+                                .then(Commands.argument("target", EntityArgument.players())
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0))
+                                                .executes(context -> {
+                                                            BalanceControl.removeMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
                                                             return 0;
                                                         }
                                                 )
