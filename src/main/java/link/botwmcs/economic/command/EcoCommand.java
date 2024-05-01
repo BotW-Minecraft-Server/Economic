@@ -69,7 +69,7 @@ public class EcoCommand {
                                 .then(Commands.argument("target", EntityArgument.players())
                                         .then(Commands.argument("amount", IntegerArgumentType.integer(0))
                                                 .executes(context -> {
-                                                            BalanceControl.removeMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
+                                                            BalanceControl.subtractMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
                                                             return 0;
                                                         }
                                                 )
