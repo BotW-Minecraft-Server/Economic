@@ -27,10 +27,10 @@ public class ServerConfig {
                 .define("startingMoney", 0.00);
         maxMoney = builder
                 .comment("The maximum amount of money that players can have.")
-                .defineInRange("maxMoney", 1000000000.00, 0.00, Double.MAX_VALUE);
+                .define("maxMoney", 1000000000.00);
         minMoney = builder
                 .comment("The minimum amount of money that players can have.")
-                .defineInRange("minMoney", 0.00, Double.MIN_VALUE, 0.00);
+                .define("minMoney", 0.00);
         enableRound = builder
                 .comment("Enable or disable rounding money.")
                 .define("enableRound", true);

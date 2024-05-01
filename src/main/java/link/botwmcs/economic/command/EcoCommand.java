@@ -1,9 +1,11 @@
 package link.botwmcs.economic.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import link.botwmcs.economic.capability.entity.CapabilityRegister;
+import link.botwmcs.economic.config.ServerConfig;
 import link.botwmcs.economic.event.player.PlayerEventHandler;
 import link.botwmcs.economic.util.BalanceControl;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,14 +31,15 @@ public class EcoCommand {
                 .then(Commands.literal("pay")
                         .requires(CommandSourceStack::isPlayer)
                         .then(Commands.argument("target", EntityArgument.player())
-                                .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                                .then(Commands.argument("amount", DoubleArgumentType.doubleArg(1))
                                         .executes(context -> {
                                             if (BalanceControl.pay(context.getSource().getPlayer(), EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"))) {
                                                 context.getSource().sendSystemMessage(Component.nullToEmpty("Payment successful!"));
+                                                return 1;
                                             } else {
                                                 context.getSource().sendSystemMessage(Component.nullToEmpty("You don't have enough money!"));
+                                                return 0;
                                             }
-                                            return 1;
                                         })
                                 )
                         )
@@ -45,10 +48,10 @@ public class EcoCommand {
                         .requires(source -> source.hasPermission(4))
                         .then(Commands.literal("set")
                                 .then(Commands.argument("target", EntityArgument.players())
-                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(ServerConfig.CONFIG.minMoney.get(), ServerConfig.CONFIG.maxMoney.get()))
                                                 .executes(context -> {
                                                             BalanceControl.setMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
-                                                            return 0;
+                                                            return 1;
                                                         }
                                                 )
                                         )
@@ -56,10 +59,10 @@ public class EcoCommand {
                         )
                         .then(Commands.literal("add")
                                 .then(Commands.argument("target", EntityArgument.players())
-                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0, ServerConfig.CONFIG.maxMoney.get()))
                                                 .executes(context -> {
                                                             BalanceControl.addMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
-                                                            return 0;
+                                                            return 1;
                                                         }
                                                 )
                                         )
@@ -67,10 +70,10 @@ public class EcoCommand {
                         )
                         .then(Commands.literal("remove")
                                 .then(Commands.argument("target", EntityArgument.players())
-                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0, ServerConfig.CONFIG.minMoney.get()))
                                                 .executes(context -> {
                                                             BalanceControl.subtractMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
-                                                            return 0;
+                                                            return 1;
                                                         }
                                                 )
                                         )
