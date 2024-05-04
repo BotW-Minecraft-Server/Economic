@@ -18,9 +18,9 @@ public class Economic implements ModInitializer {
     @Override
     public void onInitialize() {
         printConsoleOutput();
+        registerConfigs();
         registerCommands();
         registerEvents();
-        registerConfigs();
     }
 
     private void printConsoleOutput() {
@@ -29,7 +29,7 @@ public class Economic implements ModInitializer {
 
     private void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            EcoCommand.register(dispatcher);
+            EcoCommand.register(dispatcher, registryAccess);
         });
     }
 

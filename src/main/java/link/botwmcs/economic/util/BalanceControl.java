@@ -3,25 +3,26 @@ package link.botwmcs.economic.util;
 import link.botwmcs.economic.capability.entity.CapabilityRegister;
 import link.botwmcs.economic.config.ServerConfig;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.lang.module.Configuration;
 
 public class BalanceControl {
     // Getter Setter Adder Subtractor
-    public static double getMoney(ServerPlayer serverPlayer) {
-        return roundMoney(CapabilityRegister.PLAYER_DATA.get(serverPlayer).getMoney());
+    public static double getMoney(Player player) {
+        return roundMoney(CapabilityRegister.PLAYER_DATA.get(player).getMoney());
     }
 
-    public static void setMoney(ServerPlayer serverPlayer, double money) {
-        CapabilityRegister.PLAYER_DATA.get(serverPlayer).setMoney(safetyCheck(roundMoney(money)));
+    public static void setMoney(Player player, double money) {
+        CapabilityRegister.PLAYER_DATA.get(player).setMoney(safetyCheck(roundMoney(money)));
     }
 
-    public static void addMoney(ServerPlayer serverPlayer, double money) {
-        CapabilityRegister.PLAYER_DATA.get(serverPlayer).setMoney(getMoney(serverPlayer) + money);
+    public static void addMoney(Player player, double money) {
+        CapabilityRegister.PLAYER_DATA.get(player).setMoney(getMoney(player) + money);
     }
 
-    public static void subtractMoney(ServerPlayer serverPlayer, double money) {
-        CapabilityRegister.PLAYER_DATA.get(serverPlayer).setMoney(getMoney(serverPlayer) - money);
+    public static void subtractMoney(Player player, double money) {
+        CapabilityRegister.PLAYER_DATA.get(player).setMoney(getMoney(player) - money);
     }
 
     public static double safetyCheck(double money) {
@@ -36,21 +37,21 @@ public class BalanceControl {
 
     public static double roundMoney(double money) {
         if (ServerConfig.CONFIG.enableRound.get()) {
-            return Math.round(money * 100.0) / 100.0;
+            return Math.round(money * Math.pow(10, ServerConfig.CONFIG.roundRate.get())) / Math.pow(10, ServerConfig.CONFIG.roundRate.get());
         } else {
             return money;
         }
     }
 
-    public static void resetMoney(ServerPlayer serverPlayer) {
-        CapabilityRegister.PLAYER_DATA.get(serverPlayer).setMoney(ServerConfig.CONFIG.startingMoney.get());
+    public static void resetMoney(Player player) {
+        CapabilityRegister.PLAYER_DATA.get(player).setMoney(ServerConfig.CONFIG.startingMoney.get());
     }
 
-    public static boolean hasEnoughMoney(ServerPlayer serverPlayer, double money) {
-        return getMoney(serverPlayer) >= money;
+    public static boolean hasEnoughMoney(Player player, double money) {
+        return getMoney(player) >= money;
     }
 
-    public static boolean pay(ServerPlayer payer, ServerPlayer payee, double amount) {
+    public static boolean pay(Player payer, Player payee, double amount) {
         if (hasEnoughMoney(payer, amount)) {
             subtractMoney(payer, amount);
             addMoney(payee, amount);

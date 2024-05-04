@@ -8,17 +8,21 @@ import link.botwmcs.economic.capability.entity.CapabilityRegister;
 import link.botwmcs.economic.config.ServerConfig;
 import link.botwmcs.economic.event.player.PlayerEventHandler;
 import link.botwmcs.economic.util.BalanceControl;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.commands.arguments.item.ItemPredicateArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class EcoCommand {
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(Commands.literal("eco")
                 .then(Commands.literal("balance")
                         .requires(CommandSourceStack::isPlayer)
@@ -31,9 +35,9 @@ public class EcoCommand {
                 .then(Commands.literal("pay")
                         .requires(CommandSourceStack::isPlayer)
                         .then(Commands.argument("target", EntityArgument.player())
-                                .then(Commands.argument("amount", DoubleArgumentType.doubleArg(1))
+                                .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0.01))
                                         .executes(context -> {
-                                            if (BalanceControl.pay(context.getSource().getPlayer(), EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"))) {
+                                            if (BalanceControl.pay(context.getSource().getPlayer(), EntityArgument.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"))) {
                                                 context.getSource().sendSystemMessage(Component.nullToEmpty("Payment successful!"));
                                                 return 1;
                                             } else {
@@ -48,9 +52,9 @@ public class EcoCommand {
                         .requires(source -> source.hasPermission(4))
                         .then(Commands.literal("set")
                                 .then(Commands.argument("target", EntityArgument.players())
-                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(ServerConfig.CONFIG.minMoney.get(), ServerConfig.CONFIG.maxMoney.get()))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg())
                                                 .executes(context -> {
-                                                            BalanceControl.setMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
+                                                            BalanceControl.setMoney(EntityArgument.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
                                                             return 1;
                                                         }
                                                 )
@@ -59,9 +63,9 @@ public class EcoCommand {
                         )
                         .then(Commands.literal("add")
                                 .then(Commands.argument("target", EntityArgument.players())
-                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0, ServerConfig.CONFIG.maxMoney.get()))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
                                                 .executes(context -> {
-                                                            BalanceControl.addMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
+                                                            BalanceControl.addMoney(EntityArgument.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
                                                             return 1;
                                                         }
                                                 )
@@ -70,15 +74,34 @@ public class EcoCommand {
                         )
                         .then(Commands.literal("remove")
                                 .then(Commands.argument("target", EntityArgument.players())
-                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0, ServerConfig.CONFIG.minMoney.get()))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
                                                 .executes(context -> {
-                                                            BalanceControl.subtractMoney(EntityArgument.getPlayer(context, "target"), IntegerArgumentType.getInteger(context, "amount"));
+                                                            BalanceControl.subtractMoney(EntityArgument.getPlayer(context, "target"), DoubleArgumentType.getDouble(context, "amount"));
                                                             return 1;
                                                         }
                                                 )
                                         )
                                 )
                         )
+//                        .then(Commands.literal("item")
+//                                .then(Commands.literal("list")
+//                                )
+//                                .then(Commands.literal("set")
+//                                        .then(Commands.argument("item", ItemArgument.item(buildContext))
+//                                                .then(Commands.argument("price", DoubleArgumentType.doubleArg(0))
+//                                                        .executes(context -> {
+//                                                            // todo: define a item price
+//                                                            return 1;
+//                                                        })
+//                                                )
+//                                        )
+//                                )
+//                                .then(Commands.literal("remove")
+//                                        .then(Commands.argument("item", ItemArgument.item(buildContext))
+//
+//                                        )
+//                                )
+//                        )
                 )
         );
     }

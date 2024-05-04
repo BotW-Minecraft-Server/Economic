@@ -2,6 +2,7 @@ package link.botwmcs.economic.event.player;
 
 import link.botwmcs.economic.capability.entity.CapabilityRegister;
 import link.botwmcs.economic.util.BalanceControl;
+import link.botwmcs.economic.util.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,5 +19,7 @@ public class WorldJoinEvent {
         } else {
             serverPlayer.sendSystemMessage(net.minecraft.network.chat.Component.nullToEmpty("Welcome back to LTSX!"));
         }
+
+        PlayerUtil.refreshPlayerData(serverPlayer);
     }
 }

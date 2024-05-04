@@ -1,7 +1,9 @@
 package link.botwmcs.economic.capability.entity;
 
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PlayerEcoData implements IPlayerEcoData, AutoSyncedComponent {
     private final Object provider;
